@@ -5,12 +5,9 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        "dark-gray": "#131313",
-        "dark-slate": "#2e333d",
-        "dark-blue": "#6B8Afd",
-        "light-gray": "#F5F5F5",
-        "light-slate": "#D0D4DB",
-        "light-blue": "#A3C0FF",
+        gray: "rgba(var(--gray))",
+        slate: "rgba(var(--slate))",
+        primary: "rgba(var(--primary))",
       },
     },
   },
