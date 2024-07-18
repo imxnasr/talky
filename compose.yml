@@ -6,7 +6,7 @@ services:
     ports:
       - "3000:3000"
     env_file:
-      - path: .env
+      - path: .env.local
         required: true
     develop:
       watch:
@@ -19,3 +19,5 @@ services:
         - path: .
           action: sync
           target: /app
+          ignore:
+            - /node_modules
