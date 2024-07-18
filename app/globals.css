@@ -2,18 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
+input {
+  outline: none;
+}
+
 :root,
 .dark {
   --gray: 19, 19, 19; /*#131313*/
-  --slate: 46, 51, 61; /*#2E333d*/
+  --slate: 32, 35, 41; /*#202329*/
+  --slate-secondary: 46, 51, 61; /*#2E333D*/
   --primary: 107, 138, 253; /*#6B8AfD*/
 
   --color: 255, 255, 255; /*#FFFFFF*/
+  --color-secondary: 169, 167, 167; /*#A9A7A7*/
 }
 .light {
   --gray: 245, 245, 245; /*#F5F5F5*/
-  --slate: 208, 212, 219; /*#D0D4DB*/
+  --slate: 225, 227, 232; /*#E1E3E8*/
+  --slate-secondary: 208, 212, 219; /*#D0D4DB*/
   --primary: 163, 192, 255; /*#A3C0FF*/
 
   --color: 0, 0, 0; /*#000000*/
+  --color-secondary: 92, 92, 92; /*#5C5C5C*/
 }

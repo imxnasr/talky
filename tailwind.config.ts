@@ -7,9 +7,11 @@ const config: Config = {
       colors: {
         gray: "rgba(var(--gray))",
         slate: "rgba(var(--slate))",
+        slateSecondary: "rgb(var(--slate-secondary))",
         primary: "rgba(var(--primary))",
 
         color: "rgba(var(--color))",
+        colorSecondary: "rgba(var(--color-secondary))",
       },
     },
   },
