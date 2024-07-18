@@ -22,5 +22,20 @@ export const Providers: FC<ProvidersProps> = ({ children }) => {
       }
     }
   }, []);
+  useEffect(() => {
+    if (typeof window !== undefined) {
+      const handleStorageChange = (e: StorageEvent) => {
+        // Remove the old theme
+        document.documentElement.classList.remove(e.oldValue || "dark");
+        // Add the new theme
+        document.documentElement.classList.add(e.newValue || "dark");
+      };
+      // Tracks the localStorage for any changes
+      window.addEventListener("storage", handleStorageChange);
+      return () => {
+        window.removeEventListener("storage", handleStorageChange);
+      };
+    }
+  }, []);
   return children;
 };

@@ -8,6 +8,8 @@ const config: Config = {
         gray: "rgba(var(--gray))",
         slate: "rgba(var(--slate))",
         primary: "rgba(var(--primary))",
+
+        color: "rgba(var(--color))",
       },
     },
   },
