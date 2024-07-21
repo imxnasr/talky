@@ -12,7 +12,7 @@ export const Message: FC<MessageProps> = ({ me, avatar }) => {
       <Avatar placeholder={!avatar} twSize={14} />
       {/* Actual Message */}
       <div className={`${me ? "bg-primary" : "bg-slateSecondary"} mt-1 p-4 rounded-2xl max-w-[70%]`}>
-        <p className="text-color">I'm stuck in traffic, I'll be there a little later</p>
+        <p>I'm stuck in traffic, I'll be there a little later</p>
       </div>
     </div>
   );

@@ -23,7 +23,7 @@ export const Chat: FC<ChatProps> = () => {
       <div className="flex justify-between w-full">
         {/* Texts */}
         <div className="flex flex-col justify-between">
-          <h1 className="text-color font-bold text-3xl">John Smith</h1>
+          <h1 className="font-bold text-3xl">John Smith</h1>
           <p className="text-colorSecondary">45 members, 24 online</p>
         </div>
         {/* Actions */}

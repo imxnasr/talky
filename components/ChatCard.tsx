@@ -12,7 +12,7 @@ export const ChatCard: FC<ChatCardProps> = ({ selected = false }) => {
       <Avatar />
       {/* Texts */}
       <div>
-        <h4 className="text-color mt-1">John Smith</h4>
+        <h4 className="mt-1">John Smith</h4>
         <p className="text-colorSecondary">How are you today?</p>
       </div>
       {/* Info */}

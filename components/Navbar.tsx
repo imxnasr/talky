@@ -10,7 +10,7 @@ interface LinkIconProps {
 
 const LinkIcon: FC<LinkIconProps> = ({ children, href }) => {
   return (
-    <Link href={href} className="flex flex-col items-center text-center text-color">
+    <Link href={href} className="flex flex-col items-center text-center">
       {children}
     </Link>
   );
