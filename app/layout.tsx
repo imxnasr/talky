@@ -26,7 +26,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
           }}
         />
       </head>
-      <body className="bg-gray text-color h-screen overflow-hidden flex justify-center">
+      <body className="bg-gray text-color h-screen overflow-hidden">
         <Providers>{children}</Providers>
       </body>
     </html>

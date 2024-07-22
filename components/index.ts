@@ -4,3 +4,6 @@ export * from "./Search";
 export * from "./ChatCard";
 export * from "./Chat";
 export * from "./Avatar";
+export * from "./Input";
+export * from "./Or";
+export * from "./SocialAuthBtn";
