@@ -9,8 +9,8 @@ const UserSchema = new Schema({
   date_joined: { type: Date, default: Date.now },
   active: { type: Boolean, default: true },
 
-  messages: [{ type: Schema.Types.ObjectId, ref: "Message" }],
-  conversations: [{ type: Schema.Types.ObjectId, ref: "Conversation" }],
+  messages: [{ type: Schema.Types.ObjectId, ref: "Message", default: [] }],
+  conversations: [{ type: Schema.Types.ObjectId, ref: "Conversation", default: [] }],
 });
 
 export default models.User || model("User", UserSchema);

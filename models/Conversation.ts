@@ -1,10 +1,10 @@
 import { model, models, Schema } from "mongoose";
 
 const ConversationSchema = new Schema({
-  name: { type: String },
-  users: [{ type: Schema.Types.ObjectId, ref: "User", required: true }],
-  messages: [{ type: Schema.Types.ObjectId, ref: "Message" }],
-  last_message: { type: Schema.Types.ObjectId, ref: "Message" },
+  name: { type: String, blank: true },
+  users: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  messages: [{ type: Schema.Types.ObjectId, ref: "Message", default: [] }],
+  last_message: { type: Schema.Types.ObjectId, ref: "Message", blank: true },
   date_created: { type: Date, default: Date.now },
 
   isGroup: { type: Boolean, default: false },
