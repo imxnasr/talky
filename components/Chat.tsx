@@ -1,22 +1,34 @@
 "use client";
 
-import { FC, FormEvent, useState } from "react";
+import { FC, FormEvent, useEffect, useRef, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { IoSend } from "react-icons/io5";
 import { PiDotsThreeOutlineVertical } from "react-icons/pi";
 import { Message } from "./Message";
+import { messages as data } from "@/utils/data";
 
 interface ChatProps {}
 
 export const Chat: FC<ChatProps> = () => {
   const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState(data);
+  const scrollable = useRef<HTMLDivElement | null>(null);
   const sendMessage = (e: FormEvent) => {
     e.preventDefault();
     if (message !== "") {
       console.log("Chat Section:", message);
+      setMessages([...messages, { id: messages.length, text: message, sender: "user" }]);
       setMessage("");
     }
   };
+
+  useEffect(() => {
+    if (scrollable.current) {
+      scrollable.current.scrollTo(0, scrollable.current.scrollHeight);
+    } else {
+    }
+  }, [messages]);
+
   return (
     <section className="flex flex-col flex-1">
       {/* Header */}
@@ -33,33 +45,10 @@ export const Chat: FC<ChatProps> = () => {
         </div>
       </div>
       {/* Messages */}
-      <div className="flex-1 overflow-scroll">
-        <Message avatar />
-        <Message me avatar />
-        <Message />
-        <Message />
-        <Message avatar />
-        <Message me />
-        <Message me />
-        <Message me avatar />
-        <Message avatar />
-        <Message me />
-        <Message me avatar />
-        <Message avatar />
-        <Message me />
-        <Message me avatar />
-        <Message />
-        <Message />
-        <Message />
-        <Message />
-        <Message />
-        <Message avatar />
-        <Message me />
-        <Message me />
-        <Message me />
-        <Message me />
-        <Message me />
-        <Message me avatar />
+      <div ref={scrollable} className="flex-1 overflow-scroll">
+        {messages.map((message, idx) => (
+          <Message key={idx} me={message.sender === "user"} message={message.text} avatar={idx < messages.length - 1 ? messages[idx + 1].sender !== message.sender : true} />
+        ))}
       </div>
       {/* Input */}
       <form onSubmit={sendMessage} className="flex text-colorSecondary justify-between items-center -mb-5">
