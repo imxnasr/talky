@@ -8,7 +8,7 @@ export const POST = async (request: Request) => {
     await connect();
     const body = await request.json();
     const user = {
-      name: body.name,
+      name: body.username,
       username: body.username,
       email: body.email,
       password: sha1(body.password),
@@ -18,8 +18,8 @@ export const POST = async (request: Request) => {
     if (checkUsername) return NextResponse.json({ error: "Username already exists" }, { status: 401 });
     if (checkEmail) return NextResponse.json({ error: "Email already exists" }, { status: 401 });
     await User.create(user);
-    return NextResponse.json(user, { status: 201 });
+    return NextResponse.json({ user }, { status: 201 });
   } catch (error) {
-    return NextResponse.json(error, { status: 500 });
+    return NextResponse.json({ error }, { status: 500 });
   }
 };
