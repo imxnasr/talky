@@ -29,7 +29,7 @@ const RegisterContent = () => {
     if (res.status === 201) {
       // TODO signIn(data);
       router.push("/");
-    } else if (res.status === 401) {
+    } else {
       // TODO show error
       // throw new Error(data.error);
     }
