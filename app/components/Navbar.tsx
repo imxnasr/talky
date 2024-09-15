@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@remix-run/react";
 import { FC, ReactNode } from "react";
 import { IoChatbubbles } from "react-icons/io5";
 import { MdGroups } from "react-icons/md";
@@ -10,7 +10,7 @@ interface LinkIconProps {
 
 const LinkIcon: FC<LinkIconProps> = ({ children, href }) => {
   return (
-    <Link href={href} className="flex flex-col items-center text-center">
+    <Link to={href} className="flex flex-col items-center text-center">
       {children}
     </Link>
   );
