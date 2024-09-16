@@ -12,31 +12,30 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
 
-  console.log(username, email, password);
-
   // Check input's validity
   if (!username || !email || !password) return { error: "Please enter all fields" };
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(String(email))) return { error: "Please enter a valid email" };
 
-  // // Check if username or email already exists. If not, create a new user
-  // try {
-  //   const checkUsername = await prisma.user.findUnique({ where: { username } });
-  //   if (checkUsername) return { error: "Username already exists" };
-
-  //   const checkEmail = await prisma.user.findUnique({ where: { email } });
-  //   if (checkEmail) return { error: "Email already exists" };
-
-  //   const hashedPassword = await hashPassword(password);
-  //   const user = await prisma.user.create({ data: { username, name: username, email, password: hashedPassword } });
-  //   // TODO: return redirect with a cookieSessionStorage
-  //   return { success: "User registered successfully", user };
-  // } catch (error) {
-  //   return { error: "Something went wrong" };
-  // }
+  // Check if username or email already exists. If not, create a new user
   const prisma = new PrismaClient();
-  const users = await prisma.user.findMany();
-  return users;
+  try {
+    const checkUsername = await prisma.user.findUnique({ where: { username } });
+    if (checkUsername) return { error: "Username already exists" };
+
+    const checkEmail = await prisma.user.findUnique({ where: { email } });
+    if (checkEmail) return { error: "Email already exists" };
+
+    const hashedPassword = await hashPassword(password);
+    const user = await prisma.user.create({ data: { username, name: username, email, password: hashedPassword } });
+
+    // TODO: return redirect with a cookieSessionStorage
+    return { success: "User registered successfully", user };
+  } catch (error) {
+    return { error: "Something went wrong" };
+  } finally {
+    prisma.$disconnect();
+  }
 };
 
 export default () => {
