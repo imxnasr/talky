@@ -1,5 +1,3 @@
-"use client";
-
 import { FC, FormEvent, useEffect, useRef, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { IoSend } from "react-icons/io5";

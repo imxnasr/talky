@@ -1,5 +1,3 @@
-"use client";
-
 import { FC, FormEvent, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 
