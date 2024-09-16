@@ -1,5 +1,11 @@
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "@remix-run/react";
 import "./tailwind.css";
+import { Providers } from "./components";
+
+export const loader = () => {
+  // const storedTheme = localStorage.getItem("theme");
+  return null;
+};
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -22,8 +28,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
           }}
         />
       </head>
-      <body>
-        {children}
+      <body className="bg-gray text-color h-screen overflow-hidden">
+        <Providers>{children}</Providers>
         <ScrollRestoration />
         <Scripts />
       </body>

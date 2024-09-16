@@ -15,7 +15,6 @@ export const Chat: FC<ChatProps> = () => {
   const [messages, setMessages] = useState(data);
   const scrollable = useRef<HTMLDivElement | null>(null);
 
-  console.log(data);
   const sendMessage = (e: FormEvent) => {
     e.preventDefault();
     if (message !== "") {
@@ -25,12 +24,12 @@ export const Chat: FC<ChatProps> = () => {
     }
   };
 
-  // useEffect(() => {
-  //   if (scrollable.current) {
-  //     scrollable.current.scrollTo(0, scrollable.current.scrollHeight);
-  //   } else {
-  //   }
-  // }, [messages]);
+  useEffect(() => {
+    if (scrollable.current) {
+      scrollable.current.scrollTo(0, scrollable.current.scrollHeight);
+    } else {
+    }
+  }, [messages]);
 
   return (
     <section className="flex flex-col flex-1">

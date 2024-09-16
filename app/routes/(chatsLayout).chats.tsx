@@ -12,9 +12,9 @@ export default () => {
         <ChatCard />
         <ChatCard />
         <ChatCard />
-        {/* {data.map((chat: any) => (
+        {data.map((chat: any) => (
           <ChatCard key={chat.id} {...chat} />
-        ))} */}
+        ))}
       </section>
       {/* Messaging Section */}
       <Chat />
