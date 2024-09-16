@@ -1,9 +1,10 @@
+import { PrismaClient } from "@prisma/client";
 import { ActionFunctionArgs } from "@remix-run/node";
 import { Form, Link, useActionData } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { Input } from "~/components";
 import { hashPassword } from "~/utils/functions";
-import prisma from "~/utils/prisma";
+// import prisma from "~/utils/prisma";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData: FormData = await request.formData();
@@ -33,6 +34,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   // } catch (error) {
   //   return { error: "Something went wrong" };
   // }
+  const prisma = new PrismaClient();
   const users = await prisma.user.findMany();
   return users;
 };
