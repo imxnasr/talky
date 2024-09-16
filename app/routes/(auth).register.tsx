@@ -1,15 +1,48 @@
-import { Form, Link } from "@remix-run/react";
-import { FormEvent, useState } from "react";
+import { ActionFunctionArgs } from "@remix-run/node";
+import { Form, Link, useActionData } from "@remix-run/react";
+import { useEffect, useState } from "react";
 import { Input } from "~/components";
+import { hashPassword } from "~/utils/functions";
+import prisma from "~/utils/prisma";
+
+export const action = async ({ request }: ActionFunctionArgs) => {
+  const formData: FormData = await request.formData();
+  const username = formData.get("username") as string;
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
+
+  // Check input's validity
+  if (!username || !email || !password) return { error: "Please enter all fields" };
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(String(email))) return { error: "Please enter a valid email" };
+
+  // Check if username or email already exists. If not, create a new user
+  try {
+    const checkUsername = await prisma.user.findUnique({ where: { username } });
+    if (checkUsername) return { error: "Username already exists" };
+
+    const checkEmail = await prisma.user.findUnique({ where: { email } });
+    if (checkEmail) return { error: "Email already exists" };
+
+    const hashedPassword = await hashPassword(password);
+    const user = await prisma.user.create({ data: { username, name: username, email, password: hashedPassword } });
+    // TODO: return redirect with a cookieSessionStorage
+    return { success: "User registered successfully", user };
+  } catch (error) {
+    return { error: "Something went wrong" };
+  }
+};
 
 export default () => {
   const [isLoading, setIsLoading] = useState(false);
-  const handleRegister = (e: FormEvent) => {
-    e.preventDefault();
-  };
+  const data = useActionData<typeof action>();
+  useEffect(() => {
+    console.log(data);
+    setIsLoading(false);
+  }, [data]);
   return (
     <>
-      <Form onSubmit={handleRegister} className="flex-1 flex flex-col gap-y-2">
+      <Form onSubmit={() => setIsLoading(true)} method="post" className="flex-1 flex flex-col gap-y-2">
         <h1 className="text-4xl mb-3">Register</h1>
         <Input type="text" name="username" placeholder="Username" required />
         <Input type="email" name="email" placeholder="Email" required />
