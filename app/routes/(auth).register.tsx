@@ -1,4 +1,3 @@
-import { PrismaClient } from "@prisma/client";
 import { ActionFunctionArgs } from "@remix-run/node";
 import { Form, json, Link, useActionData } from "@remix-run/react";
 import { useEffect, useState } from "react";
@@ -19,28 +18,20 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   // Check if username or email already exists. If not, create a new user
   try {
-    const users = await prisma.user.findMany();
-    return json({ users });
+    const checkUsername = await prisma.user.findUnique({ where: { username } });
+    if (checkUsername) return { error: "Username already exists" };
+
+    const checkEmail = await prisma.user.findUnique({ where: { email } });
+    if (checkEmail) return { error: "Email already exists" };
+
+    const hashedPassword = await hashPassword(password);
+    const user = await prisma.user.create({ data: { username, name: username, email, password: hashedPassword } });
+
+    // TODO: return redirect with a cookieSessionStorage
+    return { success: "User registered successfully", user };
   } catch (error) {
-    return json({ error });
+    return { error: "Something went wrong" };
   }
-  // try {
-  //   const checkUsername = await prisma.user.findUnique({ where: { username } });
-  //   if (checkUsername) return { error: "Username already exists" };
-
-  //   const checkEmail = await prisma.user.findUnique({ where: { email } });
-  //   if (checkEmail) return { error: "Email already exists" };
-
-  //   const hashedPassword = await hashPassword(password);
-  //   const user = await prisma.user.create({ data: { username, name: username, email, password: hashedPassword } });
-
-  //   // TODO: return redirect with a cookieSessionStorage
-  //   return { success: "User registered successfully", user };
-  // } catch (error) {
-  //   return { error: "Something went wrong" };
-  // } finally {
-  //   await prisma.$disconnect();
-  // }
 };
 
 export default () => {
