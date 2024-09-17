@@ -1,10 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 import { ActionFunctionArgs } from "@remix-run/node";
-import { Form, Link, useActionData } from "@remix-run/react";
+import { Form, json, Link, useActionData } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { Input } from "~/components";
 import { hashPassword } from "~/utils/functions";
-import prisma from "~/utils/prisma";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData: FormData = await request.formData();
@@ -18,8 +17,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   if (!emailRegex.test(String(email))) return { error: "Please enter a valid email" };
 
   // Check if username or email already exists. If not, create a new user
-  const users = await prisma.user.findMany();
-  return { users };
+  const prisma = new PrismaClient();
+  try {
+    const users = await prisma.user.findMany();
+    return json({ users });
+  } catch (error) {
+    return json({ error });
+  } finally {
+    await prisma.$disconnect();
+  }
   // try {
   //   const checkUsername = await prisma.user.findUnique({ where: { username } });
   //   if (checkUsername) return { error: "Username already exists" };
