@@ -1,16 +1,10 @@
-import { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
+import { ActionFunctionArgs } from "@remix-run/node";
 import { Form, Link, redirect, useActionData } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { Input } from "~/components";
 import { commitSession, getSession } from "~/sessions";
 import { hashPassword } from "~/utils/functions";
 import prisma from "~/utils/prisma";
-
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const session = await getSession(request.headers.get("Cookie"));
-  if (session.has("id")) return redirect("/chats");
-  return null;
-};
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData: FormData = await request.formData();
