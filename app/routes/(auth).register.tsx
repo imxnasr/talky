@@ -1,9 +1,16 @@
-import { ActionFunctionArgs } from "@remix-run/node";
-import { Form, json, Link, useActionData } from "@remix-run/react";
+import { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
+import { Form, Link, redirect, useActionData } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { Input } from "~/components";
+import { commitSession, getSession } from "~/sessions";
 import { hashPassword } from "~/utils/functions";
 import prisma from "~/utils/prisma";
+
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const session = await getSession(request.headers.get("Cookie"));
+  if (session.has("id")) return redirect("/chats");
+  return null;
+};
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData: FormData = await request.formData();
@@ -18,6 +25,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   // Check if username or email already exists. If not, create a new user
   try {
+    const session = await getSession(request.headers.get("Cookie"));
     const checkUsername = await prisma.user.findUnique({ where: { username } });
     if (checkUsername) return { error: "Username already exists" };
 
@@ -27,8 +35,14 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const hashedPassword = await hashPassword(password);
     const user = await prisma.user.create({ data: { username, name: username, email, password: hashedPassword } });
 
-    // TODO: return redirect with a cookieSessionStorage
-    return { success: "User registered successfully", user };
+    session.set("id", user.id);
+    session.set("username", user.username);
+    session.set("email", user.email);
+    return redirect("/chats", {
+      headers: {
+        "Set-Cookie": await commitSession(session),
+      },
+    });
   } catch (error) {
     return { error: "Something went wrong" };
   }
