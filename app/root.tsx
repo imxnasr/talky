@@ -1,6 +1,11 @@
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "@remix-run/react";
 import "./tailwind.css";
 import { Providers } from "./components";
+import { PrismaClient } from "@prisma/client";
+
+declare global {
+  var prisma: PrismaClient | undefined;
+}
 
 export const loader = () => {
   // const storedTheme = localStorage.getItem("theme");
