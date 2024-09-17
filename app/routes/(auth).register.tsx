@@ -17,14 +17,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   if (!emailRegex.test(String(email))) return { error: "Please enter a valid email" };
 
   // Check if username or email already exists. If not, create a new user
-  const prisma = new PrismaClient();
   try {
+    const prisma = new PrismaClient();
     const users = await prisma.user.findMany();
     return json({ users });
   } catch (error) {
     return json({ error });
-  } finally {
-    await prisma.$disconnect();
   }
   // try {
   //   const checkUsername = await prisma.user.findUnique({ where: { username } });
