@@ -16,13 +16,11 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   if (!username || !email || !password) return { error: "Please enter all fields" };
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(String(email))) return { error: "Please enter a valid email" };
-  console.log(emailRegex.test(String(email)));
 
   // Check if username or email already exists. If not, create a new user
   const prisma = new PrismaClient();
   const users = await prisma.user.findMany();
-  console.log(users);
-  return { users: "Username already exists" };
+  return { users };
   // try {
   //   const checkUsername = await prisma.user.findUnique({ where: { username } });
   //   if (checkUsername) return { error: "Username already exists" };
