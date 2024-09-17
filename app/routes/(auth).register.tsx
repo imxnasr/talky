@@ -21,22 +21,31 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   // Check if username or email already exists. If not, create a new user
   const prisma = new PrismaClient();
   try {
-    const checkUsername = await prisma.user.findUnique({ where: { username } });
-    if (checkUsername) return { error: "Username already exists" };
-
-    const checkEmail = await prisma.user.findUnique({ where: { email } });
-    if (checkEmail) return { error: "Email already exists" };
-
-    const hashedPassword = await hashPassword(password);
-    const user = await prisma.user.create({ data: { username, name: username, email, password: hashedPassword } });
-
-    // TODO: return redirect with a cookieSessionStorage
-    return { success: "User registered successfully", user };
+    const users = await prisma.user.findMany();
+    console.log(users);
+    return { users: "Username already exists" };
   } catch (error) {
     return { error: "Something went wrong" };
   } finally {
     await prisma.$disconnect();
   }
+  // try {
+  //   const checkUsername = await prisma.user.findUnique({ where: { username } });
+  //   if (checkUsername) return { error: "Username already exists" };
+
+  //   const checkEmail = await prisma.user.findUnique({ where: { email } });
+  //   if (checkEmail) return { error: "Email already exists" };
+
+  //   const hashedPassword = await hashPassword(password);
+  //   const user = await prisma.user.create({ data: { username, name: username, email, password: hashedPassword } });
+
+  //   // TODO: return redirect with a cookieSessionStorage
+  //   return { success: "User registered successfully", user };
+  // } catch (error) {
+  //   return { error: "Something went wrong" };
+  // } finally {
+  //   await prisma.$disconnect();
+  // }
 };
 
 export default () => {
