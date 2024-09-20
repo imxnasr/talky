@@ -40,19 +40,19 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       },
     },
   });
-  const chats = user?.chats;
+  const chats = user?.chats || [];
   return { chats };
 };
 
 export default () => {
   const data = useLoaderData<typeof loader>();
-  const chats = data?.chats;
+  const chats = data.chats;
   return (
     <main className="flex flex-1">
       {/* Chats Section */}
       <section className="flex flex-col min-w-64 mr-10 overflow-auto">
         <Search />
-        {chats?.length ? chats?.map((chat: any, index: number) => <ChatCard key={index} name={chat.isGroup ? chat.name : chat.users[0].name} message={chat.messages[0]} />) : <p className="text-colorSecondary text-center mt-4">No chats yet</p>}
+        {chats.length > 0 ? chats.map((chat: any, index: number) => <ChatCard key={index} name={chat.isGroup ? chat.name : chat.users[0].name} message={chat.messages[0]} />) : <p className="text-colorSecondary text-center mt-4">No chats yet</p>}
       </section>
       {/* Messaging Section */}
       <Chat />
