@@ -1,5 +1,5 @@
 import { ActionFunctionArgs } from "@remix-run/node";
-import { Form, Link, redirect, useActionData } from "@remix-run/react";
+import { Form, Link, redirect, useActionData, useNavigation } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { Input } from "~/components";
 import { commitSession, getSession } from "~/sessions";
@@ -43,21 +43,18 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default () => {
-  const [isLoading, setIsLoading] = useState(false);
   const data = useActionData<typeof action>();
-  useEffect(() => {
-    console.log(data);
-    setIsLoading(false);
-  }, [data]);
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === "submitting";
   return (
     <>
-      <Form onSubmit={() => setIsLoading(true)} method="post" className="flex-1 flex flex-col gap-y-2">
+      <Form method="post" className="flex-1 flex flex-col gap-y-2">
         <h1 className="text-4xl mb-3">Register</h1>
         <Input type="text" name="username" placeholder="Username" required />
         <Input type="email" name="email" placeholder="Email" required />
         <Input type="password" name="password" placeholder="Password" required />
         <button className="bg-transparent hover:bg-primary border border-primary text-primary hover:text-color rounded-xl p-2 my-3" type="submit">
-          {isLoading ? "Loading..." : "Register"}
+          {isSubmitting ? "Loading..." : "Register"}
         </button>
       </Form>
       <p className="text-colorSecondary">
