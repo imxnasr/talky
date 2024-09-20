@@ -1,3 +1,5 @@
+//? Separated from other functions because it returns a warnings and errors and causes weird behavious
+
 import bcrypt from "bcrypt";
 
 export const hashPassword = async (password: string): Promise<string> => {
