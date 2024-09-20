@@ -15,6 +15,12 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
     select: {
       // Get all chats the user is part of
       chats: {
+        where:
+          params.type === "groups"
+            ? {
+                isGroup: true,
+              }
+            : {},
         include: {
           users: {
             // Get all users in the chat except the current user
