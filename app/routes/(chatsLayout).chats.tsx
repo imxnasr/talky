@@ -52,7 +52,7 @@ export default () => {
       {/* Chats Section */}
       <section className="flex flex-col min-w-64 mr-10 overflow-auto">
         <Search />
-        {chats.length > 0 ? chats.map((chat: any, index: number) => <ChatCard key={index} name={chat.isGroup ? chat.name : chat.users[0].name} message={chat.messages[0]} />) : <p className="text-colorSecondary text-center mt-4">No chats yet</p>}
+        {chats.length > 0 ? chats.map((chat: (typeof chats)[0], index: number) => <ChatCard key={index} name={chat.isGroup ? (chat.name as string) : chat.users[0].name} message={chat.messages[0]} />) : <p className="text-colorSecondary text-center mt-4">No chats yet</p>}
       </section>
       {/* Messaging Section */}
       <Chat />

@@ -4,9 +4,9 @@ import { Avatar } from "~/components";
 interface ChatCardProps {
   name: string;
   message: {
-    body: string;
-    image: string;
-    createdAt: string;
+    body: string | null;
+    image: string | null;
+    createdAt: Date | string;
   };
   selected?: boolean;
 }
@@ -24,7 +24,7 @@ export const ChatCard: FC<ChatCardProps> = ({ name, message, selected = false })
       {/* Info */}
       <div className="flex flex-col">
         {/* Time */}
-        <p className="text-colorSecondary text-sm">{message.createdAt}</p>
+        <p className="text-colorSecondary text-sm">{new Date(message.createdAt).toLocaleTimeString()}</p>
       </div>
     </div>
   );
