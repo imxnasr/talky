@@ -3,7 +3,7 @@ import { Form, Link, redirect, useActionData, useNavigation } from "@remix-run/r
 import { useEffect, useState } from "react";
 import { Input } from "~/components";
 import { commitSession, getSession } from "~/sessions";
-import { hashPassword } from "~/utils/functions";
+import { hashPassword } from "~/utils/auth";
 import prisma from "~/utils/prisma";
 
 export const action = async ({ request }: ActionFunctionArgs) => {

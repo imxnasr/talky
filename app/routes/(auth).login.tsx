@@ -2,7 +2,7 @@ import { ActionFunctionArgs } from "@remix-run/node";
 import { Form, Link, redirect, useActionData, useNavigation } from "@remix-run/react";
 import { Input } from "~/components";
 import { commitSession, getSession } from "~/sessions";
-import { comparePassword } from "~/utils/functions";
+import { comparePassword } from "~/utils/auth";
 import prisma from "~/utils/prisma";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
