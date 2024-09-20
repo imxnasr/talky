@@ -8,7 +8,7 @@ interface AvatarProps {
 export const Avatar: FC<AvatarProps> = ({ placeholder, twSize = 16 }) => {
   return (
     <div className={`size-${twSize} rounded-2xl overflow-hidden`}>
-      {!placeholder && <img className="size-full" src="./avatar.jpg" alt="chat-image-alt" />}
+      {!placeholder && <img className="size-full" src="/avatar.jpg" alt="chat-image-alt" />}
       {/* Dummy Divs */}
       <div className="hidden size-12" />
       <div className="hidden size-14" />
