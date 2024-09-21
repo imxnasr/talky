@@ -47,6 +47,9 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
             take: 1,
           },
         },
+        orderBy: {
+          updatedAt: "desc",
+        },
       },
     },
   });
