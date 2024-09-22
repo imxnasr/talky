@@ -11,13 +11,17 @@
   * {
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
+    /* outline: none; */
   }
 }
 * {
   transition-property: background-color, border-color, text-decoration-color, fill, stroke;
   transition-duration: 150ms;
 }
-input {
+input,
+input:focus,
+input:focus-visible,
+input:focus-within {
   outline: none;
 }
 
