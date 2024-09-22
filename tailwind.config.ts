@@ -8,6 +8,7 @@ export default {
         gray: "rgba(var(--gray))",
         slate: "rgba(var(--slate))",
         slateSecondary: "rgb(var(--slate-secondary))",
+        slateThird: "rgba(var(--slate-third))",
         primary: "rgba(var(--primary))",
 
         color: "rgba(var(--color))",
