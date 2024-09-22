@@ -3,19 +3,54 @@ import { FiSearch } from "react-icons/fi";
 import { IoSend } from "react-icons/io5";
 import { PiDotsThreeOutlineVertical } from "react-icons/pi";
 import { Message } from "~/components";
-import { messages as data } from "~/utils/data";
-import { Form } from "@remix-run/react";
-import { LoaderFunctionArgs } from "@remix-run/node";
+import { Form, useLoaderData } from "@remix-run/react";
+import { LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { getSession } from "~/sessions";
+import prisma from "~/utils/prisma";
 
-// export const loader = async ({ request }: LoaderFunctionArgs) => {
-//   const session = await getSession(request.headers.get("Cookie"));
-
-//   return null;
-// };
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
+  const session = await getSession(request.headers.get("Cookie"));
+  const chat = await prisma.chat.findUnique({
+    where: {
+      id: params.id,
+      users: {
+        some: {
+          id: session.get("id"),
+        },
+      },
+    },
+    include: {
+      users: {
+        select: {
+          id: true,
+          name: true,
+          avatar: true,
+        },
+        where: {
+          id: { not: session.get("id") },
+        },
+      },
+      messages: {
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
+    },
+  });
+  if (!chat) return redirect("/chats");
+  return {
+    currentUser: session.get("id"),
+    chatName: chat.isGroup ? chat.name : chat.users.length > 0 ? chat.users[0].name : "",
+    chatIsGroup: chat.isGroup,
+    usersCount: chat.users.length + 1,
+    messages: chat?.messages || [],
+  };
+};
 
 export default () => {
-  const [messages, setMessages] = useState(data);
+  const data = useLoaderData<typeof loader>();
+  const messagesData = data.messages;
+  const [messages, setMessages] = useState(messagesData);
   const scrollable = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -30,8 +65,8 @@ export default () => {
       <div className="flex justify-between w-full">
         {/* Texts */}
         <div className="flex flex-col justify-between">
-          <h1 className="font-bold text-3xl">John Smith</h1>
-          <p className="text-colorSecondary">45 members, 24 online</p>
+          <h1 className="font-bold text-3xl">{data.chatName}</h1>
+          <p className="text-colorSecondary">{data.chatIsGroup ? data.usersCount + " members," : ""} 24 online</p>
         </div>
         {/* Actions */}
         <div className="flex items-center gap-4 text-colorSecondary">
@@ -41,8 +76,8 @@ export default () => {
       </div>
       {/* Messages */}
       <div ref={scrollable} className="flex-1 overflow-scroll">
-        {messages.map((message, idx) => (
-          <Message key={idx} me={message.sender === "user"} message={message.text} avatar={idx < messages.length - 1 ? messages[idx + 1].sender !== message.sender : true} />
+        {messages.map((message: (typeof messagesData)[0], idx) => (
+          <Message key={idx} me={message.senderId === data.currentUser} message={message.body as string} avatar={idx < messages.length - 1 ? messages[idx + 1].senderId !== message.senderId : true} />
         ))}
       </div>
       {/* Input */}
