@@ -54,6 +54,10 @@ export default () => {
   const scrollable = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    setMessages(messagesData);
+  }, [messagesData]);
+
+  useEffect(() => {
     if (scrollable.current) {
       scrollable.current.scrollTo(0, scrollable.current.scrollHeight);
     }
