@@ -7,3 +7,4 @@ export * from "./Avatar";
 export * from "./Input";
 export * from "./Or";
 export * from "./SocialAuthBtn";
+export * from "./ChatCardLoader";
