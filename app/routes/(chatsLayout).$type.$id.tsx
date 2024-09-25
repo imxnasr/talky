@@ -4,8 +4,9 @@ import { IoSend } from "react-icons/io5";
 import { PiDotsThreeOutlineVertical } from "react-icons/pi";
 import { Message } from "~/components";
 import { Form, useLoaderData } from "@remix-run/react";
-import { LoaderFunctionArgs, redirect } from "@remix-run/node";
+import { ActionFunctionArgs, LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { getSession } from "~/sessions";
+import prisma from "~/utils/prisma";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const session = await getSession(request.headers.get("Cookie"));
@@ -13,10 +14,47 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   return { userId: session.get("id"), chatId: params.id };
 };
 
+export const action = async ({ request, params }: ActionFunctionArgs) => {
+  const formData: FormData = await request.formData();
+  const session = await getSession(request.headers.get("Cookie"));
+  if (!session.has("id")) return redirect("/chats");
+  const userId = session.get("id");
+  try {
+    const createdMessage = await prisma.message.create({
+      data: {
+        sender: {
+          connect: {
+            id: userId,
+          },
+        },
+        chat: {
+          connect: {
+            id: params.id,
+          },
+        },
+        body: formData.get("message") as string,
+      },
+    });
+    await prisma.chat.update({
+      where: {
+        id: params.id,
+      },
+      data: {
+        updatedAt: new Date().toISOString(),
+      },
+    });
+    return { message: createdMessage };
+  } catch (e) {
+    console.log(e);
+    return { error: "Error creating message" };
+  }
+};
+
 export default () => {
   const { userId, chatId } = useLoaderData<typeof loader>();
   const [isLoading, setIsLoading] = useState(true);
   const [chatData, setChatData] = useState<any>({});
+  const [message, setMessage] = useState<string>("");
   const [messages, setMessages] = useState<any[]>([]);
   const scrollable = useRef<HTMLDivElement | null>(null);
 
@@ -38,6 +76,12 @@ export default () => {
       scrollable.current.scrollTo(0, scrollable.current.scrollHeight);
     }
   }, [messages]);
+
+  const submitFn = async () => {
+    if (message.length === 0) return;
+    setMessages((prev) => [...prev, { senderId: userId, body: message, createdAt: new Date().toISOString() }]);
+    setMessage("");
+  };
 
   return (
     <section className="flex flex-col flex-1">
@@ -61,8 +105,8 @@ export default () => {
         ))}
       </div>
       {/* Input */}
-      <Form className="flex text-colorSecondary justify-between items-center -mb-5">
-        <input className="bg-transparent size-full py-4" type="text" name="message" placeholder="Your message" />
+      <Form onSubmit={submitFn} method="post" className="flex text-colorSecondary justify-between items-center -mb-5">
+        <input className="bg-transparent size-full py-4" type="text" name="message" placeholder="Your message" value={message} onChange={(e) => setMessage(e.target.value)} />
         <button className="grid place-items-center" type="submit">
           <IoSend size={25} />
         </button>

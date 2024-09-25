@@ -29,7 +29,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
       },
       messages: {
         orderBy: {
-          createdAt: "desc",
+          createdAt: "asc",
         },
       },
     },
