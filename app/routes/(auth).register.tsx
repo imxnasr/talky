@@ -53,7 +53,7 @@ export default () => {
         <Input type="text" name="username" placeholder="Username" required />
         <Input type="email" name="email" placeholder="Email" required />
         <Input type="password" name="password" placeholder="Password" required />
-        <button className="bg-transparent hover:bg-primary border border-primary text-primary hover:text-color rounded-xl p-2 my-3" type="submit">
+        <button className="bg-transparent hover:bg-primary border border-primary text-primary hover:text-color rounded-xl p-2 my-3" type="submit" disabled={isSubmitting}>
           {isSubmitting ? "Loading..." : "Register"}
         </button>
       </Form>
