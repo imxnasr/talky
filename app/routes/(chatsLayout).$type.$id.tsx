@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { IoSend } from "react-icons/io5";
 import { PiDotsThreeOutlineVertical } from "react-icons/pi";
-import { Message } from "~/components";
+import { Message, Spinner } from "~/components";
 import { Form, useLoaderData } from "@remix-run/react";
 import { ActionFunctionArgs, LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { getSession } from "~/sessions";
@@ -90,10 +90,17 @@ export default () => {
         </div>
       </div>
       {/* Messages */}
+      {/* TODO: Add error handling */}
       <div ref={scrollable} className="flex-1 overflow-scroll">
-        {messages.map((message: any, idx: number) => (
-          <Message key={idx} me={message.senderId === userId} message={message.body as string} avatar={idx < messages.length - 1 ? messages[idx + 1].senderId !== message.senderId : true} />
-        ))}
+        {loading ? (
+          <Spinner className="text-center mx-auto" size={30} />
+        ) : (
+          <>
+            {messages.map((message: any, idx: number) => (
+              <Message key={idx} me={message.senderId === userId} message={message.body as string} avatar={idx < messages.length - 1 ? messages[idx + 1].senderId !== message.senderId : true} />
+            ))}
+          </>
+        )}
       </div>
       {/* Input */}
       <Form onSubmit={submitFn} method="post" className="flex text-colorSecondary justify-between items-center -mb-5">
