@@ -7,6 +7,7 @@ import { Form, useLoaderData } from "@remix-run/react";
 import { ActionFunctionArgs, LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { getSession } from "~/sessions";
 import prisma from "~/utils/prisma";
+import { useFetch } from "~/hooks";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const session = await getSession(request.headers.get("Cookie"));
@@ -52,24 +53,14 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
 
 export default () => {
   const { userId, chatId } = useLoaderData<typeof loader>();
-  const [isLoading, setIsLoading] = useState(true);
-  const [chatData, setChatData] = useState<any>({});
   const [message, setMessage] = useState<string>("");
   const [messages, setMessages] = useState<any[]>([]);
   const scrollable = useRef<HTMLDivElement | null>(null);
-
-  const getChatData = async () => {
-    setIsLoading(true);
-    const res = await fetch("/api/chats/" + chatId + "?userId=" + userId);
-    const data = await res.json();
-    setChatData(data);
-    setMessages(data.messages);
-    setIsLoading(false);
-  };
+  const { data, error, loading } = useFetch("/api/chats/" + chatId + "?userId=" + userId);
 
   useEffect(() => {
-    getChatData();
-  }, [chatId]);
+    if (data?.messages.length > 0) setMessages(data.messages);
+  }, [data]);
 
   useEffect(() => {
     if (scrollable.current) {
@@ -89,8 +80,8 @@ export default () => {
       <div className="flex justify-between w-full">
         {/* Texts */}
         <div className="flex flex-col justify-between">
-          <h1 className="font-bold text-3xl">{chatData.chatName}</h1>
-          <p className="text-colorSecondary">{chatData.chatIsGroup ? chatData.usersCount + " members," : ""} 24 online</p>
+          <h1 className="font-bold text-3xl">{loading ? "Loading..." : data?.chatName}</h1>
+          <p className="text-colorSecondary">{data?.chatIsGroup ? data?.usersCount + " members," : ""} 24 online</p>
         </div>
         {/* Actions */}
         <div className="flex items-center gap-4 text-colorSecondary">
