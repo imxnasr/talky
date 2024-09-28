@@ -6,8 +6,10 @@ import { Message, Spinner } from "~/components";
 import { Form, useLoaderData } from "@remix-run/react";
 import { ActionFunctionArgs, LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { getSession } from "~/sessions";
-import prisma from "~/utils/prisma";
 import { useFetch } from "~/hooks";
+import prisma from "~/utils/prisma";
+import pusherClient from "~/utils/pusher.client";
+import pusherServer from "~/utils/pusher";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const session = await getSession(request.headers.get("Cookie"));
@@ -17,9 +19,22 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
   const formData: FormData = await request.formData();
+
+  // Getting the userId from the session
   const session = await getSession(request.headers.get("Cookie"));
   if (!session.has("id")) return redirect("/chats");
   const userId = session.get("id");
+
+  // Creating the message data
+  const newMessage = {
+    senderId: userId,
+    body: formData.get("message") as string,
+    createdAt: new Date().toISOString(),
+  };
+  // Pusher WebSocket
+  await pusherServer.trigger(params.id as string, "messages:new", newMessage);
+
+  // Creating the message in the database
   try {
     const createdMessage = await prisma.message.create({
       data: {
@@ -59,6 +74,18 @@ export default () => {
   const { data, error, loading } = useFetch("/api/chats/" + chatId + "?userId=" + userId);
 
   useEffect(() => {
+    const channel = pusherClient.subscribe(chatId as string);
+    channel.bind("messages:new", (message: any) => {
+      setMessages((prev) => [...prev, message]);
+      scrollable.current?.scrollTo(0, scrollable.current.scrollHeight);
+    });
+    return () => {
+      channel.unsubscribe();
+      channel.unbind("messages:new");
+    };
+  }, []);
+
+  useEffect(() => {
     if (data?.messages.length > 0) setMessages(data.messages);
   }, [data]);
 
@@ -70,7 +97,6 @@ export default () => {
 
   const submitFn = async () => {
     if (message.length === 0) return;
-    setMessages((prev) => [...prev, { senderId: userId, body: message, createdAt: new Date().toISOString() }]);
     setMessage("");
   };
 
