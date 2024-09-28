@@ -1,13 +1,25 @@
-import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "@remix-run/react";
+import { json, Links, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from "@remix-run/react";
 import { Providers } from "./components";
 import "./tailwind.css";
 
+declare global {
+  interface Window {
+    ENV: {
+      PUSHER_APP_KEY: string;
+    };
+  }
+}
+
 export const loader = () => {
-  // const storedTheme = localStorage.getItem("theme");
-  return null;
+  return json({
+    ENV: {
+      PUSHER_APP_KEY: process.env.PUSHER_APP_KEY,
+    },
+  });
 };
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const data = useLoaderData<typeof loader>();
   return (
     <html lang="en">
       <head>
@@ -24,6 +36,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
               const theme = storedTheme ? storedTheme : (prefersDarkScheme ? 'dark' : 'light');
               document.documentElement.classList.add(theme);
             })();
+            window.ENV = ${JSON.stringify(data.ENV)};
             `,
           }}
         />
