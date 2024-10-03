@@ -27,8 +27,8 @@ export default () => {
           <ChatCardLoader />
         ) : data?.chats.length > 0 ? (
           data?.chats.map((chat: any, index: number) => (
-            <Link to={`/${params.type}/${chat.id}`}>
-              <ChatCard key={index} name={chat.isGroup ? (chat.name as string) : chat.users[0].name} message={chat.messages[0]} selected={params.id === chat.id} />
+            <Link to={`/${params.type}/${chat.id}`} key={index}>
+              <ChatCard name={chat.isGroup ? (chat.name as string) : chat.users[0].name} message={chat.messages[0]} selected={params.id === chat.id} />
             </Link>
           ))
         ) : (
