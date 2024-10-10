@@ -1,42 +1,35 @@
 import { LoaderFunctionArgs, redirect } from "@remix-run/node";
-import { useLoaderData, useNavigate } from "@remix-run/react";
+import { useLoaderData, useNavigate, useSearchParams } from "@remix-run/react";
 import { useDebounce } from "@uidotdev/usehooks";
 import { useEffect, useState } from "react";
 import { Input } from "~/components";
 import { useFetch } from "~/hooks";
 import { getSession } from "~/sessions";
-import prisma from "~/utils/prisma";
-
-export const getUsers = async (q: string) => {
-  const users = await prisma.user.findMany({
-    where: {
-      name: {
-        contains: q,
-      },
-    },
-  });
-  return users;
-};
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const session = await getSession(request.headers.get("Cookie"));
   if (!session.has("id")) return redirect("/chats");
-  const { searchParams } = new URL(request.url);
-  return { userId: session.get("id"), query: searchParams.get("q") as string };
+  return { userId: session.get("id") };
 };
 
 export default () => {
-  const navigate = useNavigate();
-  const { userId, query } = useLoaderData<typeof loader>();
-  const [q, setQ] = useState(query);
+  const { userId } = useLoaderData<typeof loader>();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [q, setQ] = useState(searchParams.get("q") || "");
   const debouncedQ = useDebounce(q, 500);
   const { data, error, loading } = useFetch(`/api/search?userId=${userId}&q=${debouncedQ}`);
   useEffect(() => {
-    navigate(`/search?q=${q}`);
+    setSearchParams(
+      (prev) => {
+        prev.set("q", debouncedQ);
+        return prev;
+      },
+      { preventScrollReset: true }
+    );
   }, [debouncedQ]);
   return (
     <div>
-      <Input type="text" name="search" id="search" placeholder="Search..." onChange={(e) => setQ(e.target.value)} />
+      <Input type="text" name="search" id="search" placeholder="Search..." value={q} onChange={(e) => setQ(e.target.value)} />
       {loading ? (
         <div className="text-center">Loading...</div>
       ) : data?.users?.length > 0 ? (
