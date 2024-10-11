@@ -3,13 +3,13 @@ import prisma from "~/utils/prisma";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { searchParams } = new URL(request.url);
-  const id = searchParams.get("id");
+  const userId = searchParams.get("userId");
   const type = searchParams.get("type");
-  if (!id) {
+  if (!userId) {
     return [];
   }
   const user = await prisma.user.findUnique({
-    where: { id: id },
+    where: { id: userId },
     select: {
       // Get all chats the user is part of
       chats: {
@@ -23,7 +23,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
           users: {
             // Get all users in the chat except the current user
             where: {
-              id: { not: id },
+              id: { not: userId },
             },
             select: {
               id: true,

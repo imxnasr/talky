@@ -11,7 +11,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   if (q === "") {
     return new Response(JSON.stringify({ users: [] }));
   }
-  console.log(q);
   const users = await prisma.user.findMany({
     where: {
       id: { not: userId },
