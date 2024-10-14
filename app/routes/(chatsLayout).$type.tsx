@@ -2,7 +2,7 @@ import { LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { Link, Outlet, useLoaderData, useOutlet, useParams, useSearchParams } from "@remix-run/react";
 import { useDebounce } from "@uidotdev/usehooks";
 import { useEffect, useState } from "react";
-import { ChatCard, ChatCardLoader, Input, Search } from "~/components";
+import { ChatCard, ChatCardLoader, Input, Search, SearchSection } from "~/components";
 import { useFetch } from "~/hooks";
 import { getSession } from "~/sessions";
 
@@ -57,23 +57,7 @@ export default () => {
           )}
         </section>
       ) : (
-        <div className="flex-1">
-          <Input type="text" name="search" id="search" placeholder="Search..." value={q} onChange={(e) => setQ(e.target.value)} noLabel />
-          {loading ? (
-            <div className="text-center">Loading...</div>
-          ) : data?.users?.length > 0 ? (
-            <div className="flex flex-col gap-4">
-              {data?.users.map((user: any, index: number) => (
-                <div key={index} className="flex gap-4 items-center">
-                  <img className="w-12 h-12 rounded-full" src={user.avatar || "avatar.jpg"} alt={user.name} />
-                  <p>{user.name}</p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center">No results found</div>
-          )}
-        </div>
+        <SearchSection loading={loading} data={data} q={q} setQ={setQ} />
       )}
       <h1 className="text-colorSecondary text-center mt-10 mb-4">{params.type !== "search" && !outlet ? "Select a chat" : ""}</h1>
       <Outlet />
