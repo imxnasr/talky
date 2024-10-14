@@ -2,7 +2,7 @@ import { LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { Link, Outlet, useLoaderData, useOutlet, useParams, useSearchParams } from "@remix-run/react";
 import { useDebounce } from "@uidotdev/usehooks";
 import { useEffect, useState } from "react";
-import { ChatCard, ChatCardLoader, Input, Search, SearchSection } from "~/components";
+import { ChatCard, ChatCardLoader, Input, Search, SearchSection, SideChatsSection } from "~/components";
 import { useFetch } from "~/hooks";
 import { getSession } from "~/sessions";
 
@@ -41,24 +41,7 @@ export default () => {
   return (
     <main className="flex flex-1">
       {/* Chats Section */}
-      {params.type !== "search" ? (
-        <section className="flex flex-col w-80 mr-10 overflow-auto">
-          <Search />
-          {loading ? (
-            <ChatCardLoader />
-          ) : data?.chats?.length > 0 ? (
-            data?.chats.map((chat: any, index: number) => (
-              <Link to={`/${params.type}/${chat.id}`} key={index}>
-                <ChatCard name={chat.isGroup ? (chat.name as string) : chat.users[0].name} message={chat.messages[0]} selected={params.id === chat.id} />
-              </Link>
-            ))
-          ) : (
-            <p className="text-colorSecondary text-center mt-4">No chats yet</p>
-          )}
-        </section>
-      ) : (
-        <SearchSection loading={loading} data={data} q={q} setQ={setQ} />
-      )}
+      {params.type !== "search" ? <SideChatsSection loading={loading} data={data} params={params} /> : <SearchSection loading={loading} data={data} q={q} setQ={setQ} />}
       <h1 className="text-colorSecondary text-center mt-10 mb-4">{params.type !== "search" && !outlet ? "Select a chat" : ""}</h1>
       <Outlet />
     </main>

@@ -9,4 +9,5 @@ export * from "./Or";
 export * from "./SocialAuthBtn";
 export * from "./ChatCardLoader";
 export * from "./Spinner";
+export * from "./SideChatsSection";
 export * from "./SearchSection";
