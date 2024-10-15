@@ -5,9 +5,10 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   name: string;
   type: "text" | "email" | "password";
   noLabel?: boolean;
+  className?: string;
 }
 
-export const Input: FC<InputProps> = ({ name, type, noLabel = false, ...props }) => {
+export const Input: FC<InputProps> = ({ name, type, noLabel = false, className, ...props }) => {
   const [showPassword, setShowPassword] = useState(false);
   return (
     <div className="flex flex-col my-1">
@@ -16,7 +17,7 @@ export const Input: FC<InputProps> = ({ name, type, noLabel = false, ...props })
           {name[0].toUpperCase() + name?.substring(1)}:
         </label>
       )}
-      <div className="bg-slateSecondary rounded-xl px-2 flex items-center">
+      <div className={`bg-slateSecondary rounded-xl px-2 flex items-center ${className}`}>
         <input className="bg-transparent h-12 w-full" type={type === "password" ? (showPassword ? "text" : "password") : type} name={name || ""} id={name || ""} {...props} />
         {type === "password" && (
           <button type="button" className="text-colorSecondary outline-none" onClick={() => setShowPassword((prev) => !prev)}>
